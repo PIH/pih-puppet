@@ -1,4 +1,4 @@
-rwanda-puppet
+pih-puppet
 =============
 
 Install script for provisioning a sync server
@@ -25,14 +25,14 @@ Verify puppet has been installed
 $ facter
 ```
 
-Copy rwanda-puppet install package to /etc/puppet/
+Copy pih-puppet install package to /etc/puppet/
 ------------------
 ```
 rm -rf /etc/puppet
 cd /etc/
 
 apt-get install git
-git clone https://github.com/cioan/rwanda-puppet.git puppet
+git clone https://github.com/pih/pih-puppet.git puppet
 
 ```
 
