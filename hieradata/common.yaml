@@ -1,0 +1,47 @@
+sitename: common
+
+services_enable: true
+java_memory_parameters: '-Xmx512m -Xms512m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:NewSize=128m'
+java_debug_parameters: ''
+java_profiler: ''
+
+# default tomcat installation
+tomcat: tomcat6
+tomcat_home: '/usr/share/tomcat6'
+tomcat_port: 8080
+tomcat_ssl_port: 8443
+tomcat_shutdown_port: 8005
+tomcat_ajp_port: 8009
+
+# run another tomcat instance on a different port
+# tomcat: tomcat6b
+# tomcat_home: '/usr/share/tomcat6b'
+# tomcat_port: 8081
+# tomcat_ssl_port: 8441
+# tomcat_shutdown_port: 8016
+# tomcat_ajp_port: 8019
+
+mysql_sys_user_group: mysql
+mysql_sys_user_name: mysql
+mysql_root_password: openmrs
+
+openmrs_db: openmrs
+# customize database name
+# openmrs_db: openmrs6b
+openmrs_db_user: openmrs
+openmrs_db_password: openmrs
+openmrs_auto_update_database: true
+
+backup_db_user: backup
+backup_db_password: foo
+remote_db_user: backups
+remote_db_server: 
+remote_backup_dir: 
+
+default_new_user_password: changeme
+backups_user_password: changeme
+
+# These need to be configured for email
+email_alerts_to: 
+smtp_username: 
+smtp_userpassword: 
