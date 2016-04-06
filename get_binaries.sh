@@ -15,7 +15,7 @@ read user
 echo Please enter password for malawitest:
 read -s password
 
-SCP_COMMAND="sshpass -p $password scp $user@malawitest.pih-emr.org:/home/spochedley/pih-puppet-files/"
+SCP_COMMAND="sshpass -p$password scp -o StrictHostKeyChecking=no $user@malawitest.pih-emr.org:/home/spochedley/pih-puppet-files/"
 
 #echo "sshpass -p $password scp $user@malawitest.pih-emr.org:/home/spochedley/pih-puppet-malawi/"
 
@@ -60,7 +60,7 @@ echo Getting war
 $SCP_COMMAND/openmrs.war modules/openmrs/files/openmrs.war
 
 echo Getting java binaries
-$SCP_COMMAND/binaries/pih_java/files/jdk-7u80-linux-x64.tar modules/pih_java/files/
+$SCP_COMMAND/binaries/pih_java/files/jdk-6u45-linux-x64.bin modules/pih_java/files/
 
 echo Getting mysql binaries
 $SCP_COMMAND/binaries/pih_mysql/files/mysql-5.6.15.tar.gz modules/pih_mysql/files/
