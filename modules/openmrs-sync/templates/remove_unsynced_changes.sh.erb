@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo ""
+echo "This will delete all local, unsynchronized changes from OpenMRS."
+echo "Only invoke this if you are requested to do so!"
+echo ""
+echo "Press Ctrl-C to abort"
+read -p "Press [Enter] key to continue..."
+
+##################################################
+echo "Set Db connection properties"
+##################################################
+MYSQL_EXE=<%= @mysql_exe %>
+LOCAL_OPENMRS_DB_USER=<%= @openmrs_db_user %>
+LOCAL_OPENMRS_DB_PASSWORD=<%= @openmrs_db_password %>
+OPENMRS_DB=<%= @openmrs_db %>
+LOCAL_DB_CREDENTIALS="-u $LOCAL_OPENMRS_DB_USER -p$LOCAL_OPENMRS_DB_PASSWORD"
+
+$MYSQL_EXE $LOCAL_DB_CREDENTIALS $OPENMRS_DB -e "delete from sync_record;"
+
+##################################################
+echo "Unsynced changes removed"
+##################################################

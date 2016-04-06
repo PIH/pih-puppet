@@ -1,0 +1,82 @@
+@echo off
+
+echo.
+echo Registers local server as a child to the parent server
+
+echo Set connection variables
+rem ====================================================================================
+set PARENT_SERVER=<%= @ssh_parent_address %>
+set SSH_USER=<%= @ssh_user %>
+set SSH_PORT=<%= @ssh_port %>
+set SSH_KEY=<%= @ssh_key %>
+set SSH_CREDENTIALS=-i %SSH_KEY% -P %SSH_PORT% %SSH_USER%@%PARENT_SERVER%
+set GZIP_EXE=<%= @gzip_exe %>
+set PLINK_EXE=<%= @plink_exe %>
+set PSCP_EXE=<%= @pscp_exe %>
+set CONNECT_TO_SERVER=%PLINK_EXE% %SSH_CREDENTIALS%
+rem ====================================================================================
+echo Set Db connection properties
+rem ====================================================================================
+set MYSQL_EXE=<%= @mysql_exe %>
+set REMOTE_OPENMRS_DB_USER=<%= @mysql_root_user %>
+set REMOTE_OPENMRS_DB_PASSWORD=<%= @parent_mysql_db_password %>
+set LOCAL_OPENMRS_DB_USER=<%= @mysql_root_user %>
+set LOCAL_OPENMRS_DB_PASSWORD=<%= @mysql_root_password %>
+set OPENMRS_DB=<%= @openmrs_db %>
+set REMOTE_DB_CREDENTIALS=-u %REMOTE_OPENMRS_DB_USER% -p%REMOTE_OPENMRS_DB_PASSWORD% %OPENMRS_DB%
+set LOCAL_DB_CREDENTIALS=-u %LOCAL_OPENMRS_DB_USER% -p%LOCAL_OPENMRS_DB_PASSWORD%
+set REMOTE_DB_CONNECTION=mysql %REMOTE_DB_CREDENTIALS%
+set DROP_AND_CREATE_DB_SCRIPT=<%= @openmrs_create_db_sql %>
+set DELETE_SYNC_TABLES_DB_SCRIPT=<%= @delete_sync_tables_sql %>
+set UPDATE_CHILD_SERVER_DB_SCRIPT=<%= @update_child_server_settings_sql %>
+set UPDATE_PARENT_SERVER_DB_SCRIPT=<%= @update_parent_server_settings_sql %>
+set SERVER_UUID_TEXT_FILE=<%= @server_uuid_text_file %>
+set LOCAL_OPENMRS_MODULES=<%= @pih_openmrs_modules %>
+set LOGFILE=sync.log
+
+echo Connect to the parent server
+:CONNECT_TO_PARENT_SSH_SERVER
+echo y | %CONNECT_TO_SERVER% exit
+echo y | %CONNECT_TO_SERVER% "ls -al"
+if "%ERRORLEVEL%" == "0" GOTO CONNECT_TO_PARENT_MYSQL 
+echo Error Connecting to the parent server 
+pause 
+exit 1
+
+:CONNECT_TO_PARENT_MYSQL
+echo Show databases on the remote server
+%CONNECT_TO_SERVER% "%REMOTE_DB_CONNECTION% -e 'show databases;' "
+if "%ERRORLEVEL%" == "0" GOTO CONFIGURE_CHILD_SETTINGS 
+echo Error Connecting to the parent MYSQL Server 
+pause 
+exit 1
+
+:CONFIGURE_CHILD_SETTINGS
+rem delete temp text file in which we store the child server uuid
+del /F /Q %SERVER_UUID_TEXT_FILE%
+rem configure sync child server ===========================================================
+echo Step 9/10: Configure sync child server
+%MYSQL_EXE% %LOCAL_DB_CREDENTIALS% %OPENMRS_DB% < %UPDATE_CHILD_SERVER_DB_SCRIPT%
+if "%ERRORLEVEL%" == "0" GOTO UPLOAD_CHILD_SERVER_UUID 
+echo Error configuring child server
+pause
+
+:UPLOAD_CHILD_SERVER_UUID
+echo Step x/10: Upload child server UUID text file to the parent server
+%PSCP_EXE% -i %SSH_KEY% -P %SSH_PORT% %SERVER_UUID_TEXT_FILE% %SSH_USER%@%PARENT_SERVER%:/tmp/
+if "%ERRORLEVEL%" == "0" GOTO CONFIGURE_PARENT_SETTINGS 
+echo Error uploading child server uuid text file to parent /tmp/ folder
+pause
+exit 0
+
+:CONFIGURE_PARENT_SETTINGS
+rem configure sync parent server ===========================================================
+echo Step 10/10: Configure sync parent server
+%CONNECT_TO_SERVER% "%REMOTE_DB_CONNECTION%" < %UPDATE_PARENT_SERVER_DB_SCRIPT%
+if "%ERRORLEVEL%" == "0" GOTO END 
+echo Error registering child server with the parent server
+pause
+exit 0
+
+:END
+pause

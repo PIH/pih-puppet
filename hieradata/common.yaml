@@ -1,17 +1,17 @@
 sitename: common
 
-services_enable: true
-java_memory_parameters: '-Xmx512m -Xms512m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:NewSize=128m'
-java_debug_parameters: ''
-java_profiler: ''
+services_enable: 
+java_memory_parameters: 
+java_debug_parameters: 
+java_profiler: 
 
 # default tomcat installation
-tomcat: tomcat6
-tomcat_home: '/usr/share/tomcat6'
-tomcat_port: 8080
-tomcat_ssl_port: 8443
-tomcat_shutdown_port: 8005
-tomcat_ajp_port: 8009
+tomcat: 
+tomcat_home: 
+tomcat_port: 
+tomcat_ssl_port: 
+tomcat_shutdown_port: 
+tomcat_ajp_port: 
 
 # run another tomcat instance on a different port
 # tomcat: tomcat6b
@@ -21,25 +21,42 @@ tomcat_ajp_port: 8009
 # tomcat_shutdown_port: 8016
 # tomcat_ajp_port: 8019
 
-mysql_sys_user_group: mysql
-mysql_sys_user_name: mysql
-mysql_root_password: openmrs
+mysql_sys_user_group: 
+mysql_sys_user_name: 
+mysql_root_user: 
 
-openmrs_db: openmrs
+ssh_parent_address: 
+ssh_user: 
+ssh_port: 
+
+openmrs_db: 
 # customize database name
 # openmrs_db: openmrs6b
-openmrs_db_user: openmrs
-openmrs_db_password: openmrs
-openmrs_auto_update_database: true
+openmrs_db_user: 
+openmrs_db_password: 
+openmrs_db_remote: 
+openmrs_auto_update_database:
+parent_mysql_root_user: 
+parent_mysql_db_password:
+mysql_root_user: 
+mysql_root_password: 
 
-backup_db_user: backup
-backup_db_password: foo
-remote_db_user: backups
+sync_parent_uuid: 
+sync_parent_user_name: 
+sync_parent_user_password: 
+sync_parent_name: 
+sync_parent_address: 
+sync_admin_email: 
+
+
+backup_db_user: 
+backup_db_password: 
+remote_db_user: 
 remote_db_server: 
 remote_backup_dir: 
 
-default_new_user_password: changeme
-backups_user_password: changeme
+default_new_user_password: 
+backups_user_password: 
 
 # These need to be configured for email
 email_alerts_to: 

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+echo "Checks for unsynced records"
+
+#################################################################
+echo "Set Db connection properties"
+#################################################################
+MYSQL_EXE=<%= @mysql_exe %>
+LOCAL_OPENMRS_DB_USER=<%= @openmrs_db_user %>
+LOCAL_OPENMRS_DB_PASSWORD=<%= @openmrs_db_password %>
+OPENMRS_DB=<%= @openmrs_db %>
+LOCAL_DB_CREDENTIALS="-u $LOCAL_OPENMRS_DB_USER -p$LOCAL_OPENMRS_DB_PASSWORD"
+LOGFILE=sync.log
+
+echo "sanity checks for local uncommitted sync_records"
+$MYSQL_EXE $LOCAL_DB_CREDENTIALS $OPENMRS_DB -e "select record_id from sync_record where state <> 'COMMITTED' and state <> 'NOT_SUPPOSED_TO_SYNC';" > $LOGFILE
+
+counter=`wc -l "$LOGFILE" | awk '{print $1'}`
+echo $counter
+if [ $counter -gt 0 ]
+then
+echo "Unsynced changes found!"
+echo "Please sync changes and retry."
+exit 0
+fi
+
